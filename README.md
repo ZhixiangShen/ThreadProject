@@ -1,5 +1,6 @@
 我们都知道，在JDK1.5之前，Java中要进行业务并发时，通常需要有程序员独立完成代码实现，当然也有一些开源的框架提供了这些功能，但是这些依然没有JDK自带的功能使用起来方便。而当针对高质量Java多线程并发程序设计时,为防止死蹦等现象的出现，比如使用java之前的wait()、notify()和synchronized等，每每需要考虑性能、死锁、公平性、资源管理以及如何避免线程安全性方面带来的危害等诸多因素，往往会采用一些较为复杂的安全策略，加重了程序员的开发负担.万幸的是，在JDK1.5出现之后，Sun大神（Doug Lea）终于为我们这些可怜的小程序员推出了java.util.concurrent工具包以简化并发完成。开发者们借助于此，将有效的减少竞争条件（race conditions）和死锁线程。concurrent包很好的解决了这些问题，为我们提供了更实用的并发程序模型。
 
+```text
 Executor                  ：具体Runnable任务的执行者。
 ExecutorService           ：一个线程池管理者，其实现类有多种，我会介绍一部分。我们能把Runnable,Callable提交到池中让其调度。
 Semaphore                 ：一个计数信号量
@@ -11,6 +12,7 @@ CountDownLatch            ：一个同步辅助类，在完成一组正在其他
 CyclicBarrier             ：一个同步辅助类，它允许一组线程互相等待，直到到达某个公共屏障点 
 Future                    ：Future 表示异步计算的结果。
 ScheduledExecutorService ：一个 ExecutorService，可安排在给定的延迟后运行或定期执行的命令。
+```
 接下来逐一介绍
 Executors主要方法说明
 newFixedThreadPool（固定大小线程池）

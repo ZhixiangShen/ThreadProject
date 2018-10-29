@@ -64,6 +64,7 @@ Semaphore
 一个计数信号量。从概念上讲，信号量维护了一个许可集合。如有必要，在许可可用前会阻塞每一个 acquire()，然后再获取该许可。每个 release() 添加一个许可，从而可能释放一个正在阻塞的获取者。但是，不使用实际的许可对象，Semaphore 只对可用许可的号码进行计数，并采取相应的行动。
 Semaphore 通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。例如，下面的类使用信号量控制对内容池的访问：
 这里是一个实际的情况，大家排队上厕所，厕所只有两个位置，来了10个人需要排队。
+```java
 01	import java.util.concurrent.ExecutorService;
 02	import java.util.concurrent.Executors;
 03	import java.util.concurrent.Semaphore;
@@ -104,6 +105,7 @@ Semaphore 通常用于限制可以访问某些资源（物理或逻辑的）的�
 38	    position.release(2);
 39	}
 40	}
+```
 ReentrantLock
 一个可重入的互斥锁定 Lock，它具有与使用 synchronized 方法和语句所访问的隐式监视器锁定相同的一些基本行为和语义，但功能更强大。
 ReentrantLock 将由最近成功获得锁定，并且还没有释放该锁定的线程所拥有。当锁定没有被另一个线程所拥有时，调用 lock 的线程将成功获取该锁定并返回。如果当前线程已经拥有该锁定，此方法将立即返回。可以使用 isHeldByCurrentThread() 和 getHoldCount() 方法来检查此情况是否发生。

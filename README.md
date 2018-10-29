@@ -113,6 +113,7 @@ ReentrantLock 将由最近成功获得锁定，并且还没有释放该锁定的
 当设置为 true时，在多个线程的争用下，这些锁定倾向于将访问权授予等待时间最长的线程。否则此锁定将无法保证任何特定访问顺序。
 与采用默认设置（使用不公平锁定）相比，使用公平锁定的程序在许多线程访问时表现为很低的总体吞吐量（即速度很慢，常常极其慢），但是在获得锁定和保证锁定分配的均衡性时差异较小。不过要注意的是，公平锁定不能保证线程调度的公平性。因此，使用公平锁定的众多线程中的一员可能获得多倍的成功机会，这种情况发生在其他活动线程没有被处理并且目前并未持有锁定时。还要注意的是，未定时的 tryLock 方法并没有使用公平设置。因为即使其他线程正在等待，只要该锁定是可用的，此方法就可以获得成功。
 建议总是 立即实践，使用 try 块来调用 lock，在之前/之后的构造中，最典型的代码如下： 
+```java
 01	class X {
 02	    private final ReentrantLock lock = new ReentrantLock();
 03	    // ...
@@ -125,7 +126,9 @@ ReentrantLock 将由最近成功获得锁定，并且还没有释放该锁定的
 10	      }
 11	    }
 12	}
+```
 我的例子：
+```java
 01	import java.util.concurrent.ExecutorService;
 02	import java.util.concurrent.Executors;
 03	import java.util.concurrent.locks.ReentrantLock;
@@ -165,6 +168,7 @@ ReentrantLock 将由最近成功获得锁定，并且还没有释放该锁定的
 37	    }
 38	}
 39	}
+```
 BlockingQueue
 支持两个附加操作的 Queue，这两个操作是：检索元素时等待队列变为非空，以及存储元素时等待空间变得可用。
 BlockingQueue 不接受 null 元素。试图 add、put 或 offer 一个 null 元素时，某些实现会抛出 NullPointerException。null 被用作指示 poll 操作失败的警戒值。
@@ -178,6 +182,7 @@ BlockingQueue 实现是线程安全的。所有排队方法都可以使用内部
 BlockingQueue 实质上不 支持使用任何一种“close”或“shutdown”操作来指示不再添加任何项。
 这种功能的需求和使用有依赖于实现的倾向。例如，一种常用的策略是：对于生产者，插入特殊的 end-of-stream 或 poison 对象，并根据使用者获取这些对象的时间来对它们进行解释。
 下面的例子演示了这个阻塞队列的基本功能。
+```java
 01	import java.util.concurrent.BlockingQueue;
 02	import java.util.concurrent.ExecutorService;
 03	import java.util.concurrent.Executors;
@@ -220,6 +225,8 @@ BlockingQueue 实质上不 支持使用任何一种“close”或“shutdown”�
 40	   service.shutdown();
 41	}
 42	}
+```
+```text
 ---------------------执行结果-----------------
 {0} in queue!
 {1} in queue!
@@ -242,14 +249,14 @@ BlockingQueue 实质上不 支持使用任何一种“close”或“shutdown”�
 5 has take!
 9 has take!
 -----------------------------------------
-
+```
 CompletionService
 将生产新的异步任务与使用已完成任务的结果分离开来的服务。生产者 submit 执行的任务。使用者 take 已完成的任务，
 并按照完成这些任务的顺序处理它们的结果。例如，CompletionService 可以用来管理异步 IO ，执行读操作的任务作为程序或系统的一部分提交，
 然后，当完成读操作时，会在程序的不同部分执行其他操作，执行操作的顺序可能与所请求的顺序不同。
 通常，CompletionService 依赖于一个单独的 Executor 来实际执行任务，在这种情况下，
 CompletionService 只管理一个内部完成队列。ExecutorCompletionService 类提供了此方法的一个实现。
-
+```java
 01	import java.util.concurrent.Callable;
 02	import java.util.concurrent.CompletionService;
 03	import java.util.concurrent.ExecutorCompletionService;
@@ -285,7 +292,7 @@ CompletionService 只管理一个内部完成队列。ExecutorCompletionService 
 33	   return this.id+":"+time;
 34	}
 35	}
-
+```
 CountDownLatch
 
 一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。
@@ -297,6 +304,7 @@ CountDownLatch 是一个通用同步工具，它有很多用途。将计数 1 �
 CountDownLatch 的一个有用特性是，它不要求调用 countDown 方法的线程等到计数到达零时才继续，
 而在所有线程都能通过之前，它只是阻止任何线程继续通过一个 await。 
 一下的例子是别人写的，非常形象。
+```java
 01	import java.util.concurrent.CountDownLatch;
 02	import java.util.concurrent.ExecutorService;
 03	import java.util.concurrent.Executors;
@@ -332,7 +340,7 @@ CountDownLatch 的一个有用特性是，它不要求调用 countDown 方法的
 33	   exec.shutdown();
 34	}
 35	}
-
+```
 CountDownLatch最重要的方法是countDown()和await()，前者主要是倒数一次，后者是等待倒数到0，如果没有到达0，就只有阻塞等待了。
 
 CyclicBarrier
@@ -341,6 +349,7 @@ CyclicBarrier
 CyclicBarrier 支持一个可选的 Runnable 命令，在一组线程中的最后一个线程到达之后（但在释放所有线程之前），
 该命令只在每个屏障点运行一次。若在继续所有参与线程之前更新共享状态，此屏障操作 很有用。
 示例用法：下面是一个在并行分解设计中使用 barrier 的例子，很经典的旅行团例子：
+```java
 01	import java.text.SimpleDateFormat;
 02	import java.util.Date;
 03	import java.util.concurrent.BrokenBarrierException;
@@ -401,7 +410,7 @@ CyclicBarrier 支持一个可选的 Runnable 命令，在一组线程中的最�
 58	     exec.shutdown();
 59	  }
 60	}
-
+```
 CyclicBarrier最重要的属性就是参与者个数，另外最要方法是await()。当所有线程都调用了await()后，就表示这些线程都可以继续执行，否则就会等待。
 Future
 Future 表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并检索计算的结果。
@@ -420,6 +429,7 @@ schedule 方法中允许出现 0 和负数延迟（但不是周期），并将�
 但是要注意，由于网络时间同步协议、时钟漂移或其他因素的存在，因此相对延迟的期满日期不必与启用任务的当前 Date 相符。
 Executors 类为此包中所提供的 ScheduledExecutorService 实现提供了便捷的工厂方法。
 一下的例子也是网上比较流行的。
+```java
 01	import static java.util.concurrent.TimeUnit.SECONDS;
 02	import java.util.Date;
 03	import java.util.concurrent.Executors;
@@ -448,4 +458,5 @@ Executors 类为此包中所提供的 ScheduledExecutorService 实现提供了�
 26	   }, 30, SECONDS);
 27	}
 28	}
+```
 这样我们就把concurrent包下比较重要的功能都已经总结完了，希望对我们理解能有帮助。

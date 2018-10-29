@@ -21,6 +21,7 @@ newSingleThreadExecutor（单个后台线程）
 创建一个使用单个 worker 线程的 Executor，以无界队列方式来运行该线程。（注意，如果因为在关闭前的执行期间出现失败而终止了此单个线程，那么如果需要，一个新线程将代替它执行后续的任务）。可保证顺序地执行各个任务，并且在任意给定的时间不会有多个线程是活动的。与其他等效的 newFixedThreadPool(1) 不同，可保证无需重新配置此方法所返回的执行程序即可使用其他的线程。
 这些方法返回的都是ExecutorService对象，这个对象可以理解为就是一个线程池。
 这个线程池的功能还是比较完善的。可以提交任务submit()可以结束线程池shutdown()。
+```java
 01	import java.util.concurrent.ExecutorService;
 02	import java.util.concurrent.Executors;
 03	public class MyExecutor extends Thread {
@@ -48,7 +49,7 @@ newSingleThreadExecutor（单个后台线程）
 25	    service.shutdown();
 26	}
 27	}
-
+```
 虽然打印了一些信息，但是看的不是非常清晰，这个线程池是如何工作的，我们来将休眠的时间调长10倍。
 Thread.sleep((int)(Math.random()*10000));
 再来看，会清楚看到只能执行4个线程。当执行完一个线程后，才会又执行一个新的线程，也就是说，我们将所有的线程提交后，线程池会等待执行完最后shutdown。我们也会发现，提交的线程被放到一个“无界队列里”。这是一个有序队列（BlockingQueue，这个下面会说到）。

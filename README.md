@@ -129,45 +129,45 @@ ReentrantLock 将由最近成功获得锁定，并且还没有释放该锁定的
 ```
 我的例子：
 ```java
-01	import java.util.concurrent.ExecutorService;
-02	import java.util.concurrent.Executors;
-03	import java.util.concurrent.locks.ReentrantLock;
-04	public class MyReentrantLock extends Thread{
-05	TestReentrantLock lock;
-06	private int id;
-07	public MyReentrantLock(int i,TestReentrantLock test){
-08	    this.id=i;
-09	    this.lock=test;
-10	}
-11	public void run(){
-12	    lock.print(id);
-13	}
-14	public static void main(String args[]){
-15	    ExecutorService service=Executors.newCachedThreadPool();
-16	    TestReentrantLock lock=new TestReentrantLock();
-17	    for(int i=0;i<10;i++){
-18	     service.submit(new MyReentrantLock(i,lock));
-19	    }
-20	    service.shutdown();
-21	}
-22	}
-23	class TestReentrantLock{
-24	private ReentrantLock lock=new ReentrantLock();
-25	public void print(int str){
-26	    try{
-27	     lock.lock();
-28	     System.out.println(str+"获得");
-29	     Thread.sleep((int)(Math.random()*1000));
-30	    }
-31	    catch(Exception e){
-32	     e.printStackTrace();
-33	    }
-34	    finally{
-35	     System.out.println(str+"释放");
-36	     lock.unlock();
-37	    }
-38	}
-39	}
+	import java.util.concurrent.ExecutorService;
+	import java.util.concurrent.Executors;
+	import java.util.concurrent.locks.ReentrantLock;
+	public class MyReentrantLock extends Thread{
+	TestReentrantLock lock;
+	private int id;
+	public MyReentrantLock(int i,TestReentrantLock test){
+	    this.id=i;
+	    this.lock=test;
+	}
+	public void run(){
+	    lock.print(id);
+	}
+	public static void main(String args[]){
+	    ExecutorService service=Executors.newCachedThreadPool();
+	    TestReentrantLock lock=new TestReentrantLock();
+	    for(int i=0;i<10;i++){
+	     service.submit(new MyReentrantLock(i,lock));
+	    }
+	    service.shutdown();
+	}
+	}
+	class TestReentrantLock{
+	private ReentrantLock lock=new ReentrantLock();
+	public void print(int str){
+	    try{
+	     lock.lock();
+	     System.out.println(str+"获得");
+	     Thread.sleep((int)(Math.random()*1000));
+	    }
+	    catch(Exception e){
+	     e.printStackTrace();
+	    }
+	    finally{
+	     System.out.println(str+"释放");
+	     lock.unlock();
+	    }
+	}
+	}
 ```
 BlockingQueue
 支持两个附加操作的 Queue，这两个操作是：检索元素时等待队列变为非空，以及存储元素时等待空间变得可用。
